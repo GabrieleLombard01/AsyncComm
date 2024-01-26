@@ -1,10 +1,11 @@
 ﻿using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
+using
+RabbitMQ.Client.Events
+;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace AsyncComm
@@ -13,6 +14,7 @@ namespace AsyncComm
     {
         static void Main(string[] args)
         {
+
             var connectionFactory = new ConnectionFactory
             {
                 HostName = "localhost",
@@ -25,20 +27,30 @@ namespace AsyncComm
             var channel = connection.CreateModel();
 
             channel.QueueDeclare("queue3", false, false, false, null);
+            var body = Encoding.UTF8.GetBytes("Hello");
+
+            channel.BasicPublish("", "queue3", null, body);
 
             var consumer = new EventingBasicConsumer(channel);
+            consumer.Received += Consumer_received;
 
-            consumer.Received += Consumer_Received;
+
+            channel.BasicConsume("queue3", true, consumer);
+            Console.ReadLine();
 
             channel.Close();
             connection.Close();
         }
 
-        private static void Consumer_Received(object sender, BasicDeliverEventArgs e)
+        private static void Consumer_received(object sender, BasicDeliverEventArgs e)
         {
+            var body = e.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
 
+            Console.WriteLine(message);
         }
-
-
     }
+
+
+
 }

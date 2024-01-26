@@ -7,7 +7,7 @@ namespace AsyncComm
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Mainttt(string[] args)
         {
             var connectionFactory = new ConnectionFactory 
             { HostName = "localhost", Port=5672, 
