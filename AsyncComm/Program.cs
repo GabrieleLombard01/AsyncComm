@@ -1,4 +1,6 @@
 ﻿using RabbitMQ.Client;
+using System;
+using System.Text;
 
 namespace AsyncComm
 {
@@ -11,6 +13,13 @@ namespace AsyncComm
               UserName= "guest", Password="guest"
             };
             var connection = connectionFactory.CreateConnection();
+
+            var channel = connection.CreateModel();
+
+            channel.QueueDeclare("queue3", false, false, false, null);
+            var body = Encoding.UTF8.GetBytes("Hello");
+
+            channel.BasicPublish("", "queue3", null, body);
 
             connection.Close();
         }
