@@ -1,6 +1,7 @@
 ﻿using RabbitMQ.Client;
 using System;
 using System.Text;
+using System.Threading;
 
 namespace AsyncComm
 {
@@ -18,6 +19,12 @@ namespace AsyncComm
 
             channel.QueueDeclare("queue3", false, false, false, null);
             var body = Encoding.UTF8.GetBytes("Hello");
+
+            while (true)
+            {
+                channel.BasicPublish("", "queue3", null, body);
+                Thread.Sleep(1000);
+            }
 
             channel.BasicPublish("", "queue3", null, body);
 
